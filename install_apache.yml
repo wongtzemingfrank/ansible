@@ -1,0 +1,23 @@
+---
+- name: Install Apache on Amazon Linux
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update repository index
+      yum:
+        update_cache: yes
+
+    - name: Install httpd (Apache)
+      yum:
+        name: httpd
+        state: latest
+
+    - name: add php support for apache
+      yum:
+        name:
+          - php
+          - php-cli
+          - php-common
+          - php-mysqlnd
+        state: latest

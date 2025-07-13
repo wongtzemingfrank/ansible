@@ -1,0 +1,19 @@
+---
+- name: Install Apache on Amazon Linux
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Remove httpd (Apache)
+      yum:
+        name: httpd
+        state: absent
+
+    - name: Remove php support for apache
+      yum:
+        name:
+          - php
+          - php-cli
+          - php-common
+          - php-mysqlnd
+        state: absent
