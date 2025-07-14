@@ -7,11 +7,13 @@
     - name: Update repository index
       yum:
         update_cache: yes
+      when: ansible_distribution_version == "2023"
 
     - name: Install httpd (Apache)
       yum:
         name: httpd
         state: latest
+      when: ansible_distribution_version == "2023"
 
     - name: add php support for apache
       yum:
@@ -21,3 +23,4 @@
           - php-common
           - php-mysqlnd
         state: latest
+      when: ansible_distribution_version == "2023"
