@@ -1,0 +1,54 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+   - name: install updates (Amazon Linux)
+     tags: always
+     dnf:
+      update_cache: yes
+     when: ansible_distribution_version == "2023"
+
+   - name: install updates (Ubuntu)
+     tags: always
+     apt:
+      upgrade: dist
+      update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+
+- hosts: web_servers
+  become: true
+  tasks:
+    - name: Install httpd (Apache) and php amazon linux 2023
+      tags: apache,apache2,amazon
+      package:
+        name:
+          - httpd
+          - php
+        state: latest
+      when: ansible_distribution_version == "2023"
+
+    - name: Install apache and php for Ubuntu
+      tags: apache,apache2,ubuntu
+      apt:
+        name:
+          - apache2
+          - libapache2-mod-php
+      when: ansible_distribution_version == "Ubuntu"
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+  - name: install mariadb package for Ubuntu
+    tags: db,mariadb,ubuntu
+    apt:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install mariadb package for Amazon Linux
+    tags: db,mariadb,amazon
+    dnf:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution == "2023"

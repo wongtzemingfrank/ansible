@@ -1,26 +1,14 @@
 ---
-- name: Install Apache on Amazon Linux
+- name: Install Apache and php on Amazon Linux
   hosts: all
   become: true
 
   tasks:
-    - name: Update repository index
-      yum:
-        update_cache: yes
-      when: ansible_distribution_version == "2023"
-
-    - name: Install httpd (Apache)
-      yum:
-        name: httpd
-        state: latest
-      when: ansible_distribution_version == "2023"
-
-    - name: add php support for apache
-      yum:
+    - name: Install httpd (Apache) and php
+      package:
         name:
+          - httpd
           - php
-          - php-cli
-          - php-common
-          - php-mysqlnd
         state: latest
+        update_cache: yes
       when: ansible_distribution_version == "2023"
