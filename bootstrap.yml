@@ -1,0 +1,40 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+   - name: install updates (Amazon Linux)
+     tags: always
+     dnf:
+      update_cache: yes
+     when: ansible_distribution_version == "2023"
+
+   - name: install updates (Ubuntu)
+     tags: always
+     apt:
+      upgrade: dist
+      update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+  - name: create izzah user
+    tags: always
+    user:
+      name: izzah
+      groups: root
+
+  - name: add ssh key for izzah
+    tags: always
+    authorized_key:
+      user: izzah
+      key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDW1MKrhdxYZkXwlWddwGg8aby4Pu3RU7prCNB4Xk06o8wlprGSAlRy20LFrxJlSCf1CRnaabD7gR/kV7aJPps87qqpYuuhwJaZKCh6VtWTHrgzo4aTav08wMvhX7R3S0VCpcLUST2WAInWMNP/kapfU6h/hs7d3gv0e2BxLj4CqcJ4vazW83jtn4/a8Zk703eGoKyUm7hz9h/RlIYd6OIsH/ocxEMFvI09mK2qDTyH1R58Al87on5c6GR0bEVRZRNEEPas51TqzblKRq3c8Xff0UCwGDCr+u252KfzMMDypDioTjeV5cWcmDV7LBbsnR/wPuMXLVQJR/9sAIPH6qz3"
+
+  - name: add sudoers file for izzah
+    tags: always
+    copy:
+      src: sudoer_izzah
+      dest: /etc/sudoers.d/izzah
+      owner: root
+      group: root
+      mode: 0440
